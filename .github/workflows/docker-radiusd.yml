@@ -29,7 +29,7 @@
             {
                "uses": "docker/build-push-action@v3",
                "with": {
-                  "context": "{{defaultContext}}:docker/radiusd",
+                  "context": "{{defaultContext}}:radiusd",
                   "platforms": "linux/arm64",
                   "push": true,
                   "tags": "${{ steps.login-ecr.outputs.registry }}/radiusd:${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/radiusd:latest"
@@ -42,11 +42,11 @@
    "on": {
       "push": {
          "branches": [
-            "master",
+            "main",
             "test"
          ],
          "paths": [
-            "docker/radiusd/**",
+            "radiusd/**",
             ".github/workflows/docker-radiusd.yml"
          ]
       }

@@ -29,7 +29,7 @@
             {
                "uses": "docker/build-push-action@v3",
                "with": {
-                  "context": "{{defaultContext}}:docker/s3tftpd-healthz",
+                  "context": "{{defaultContext}}:s3tftpd-healthz",
                   "platforms": "linux/arm64",
                   "push": true,
                   "tags": "${{ steps.login-ecr.outputs.registry }}/s3tftpd-healthz:${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/s3tftpd-healthz:latest"
@@ -42,11 +42,11 @@
    "on": {
       "push": {
          "branches": [
-            "master",
+            "main",
             "test"
          ],
          "paths": [
-            "docker/s3tftpd-healthz/**",
+            "s3tftpd-healthz/**",
             ".github/workflows/docker-s3tftpd-healthz.yml"
          ]
       }

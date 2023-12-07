@@ -29,7 +29,7 @@
             {
                "uses": "docker/build-push-action@v3",
                "with": {
-                  "context": "{{defaultContext}}:docker/unbound",
+                  "context": "{{defaultContext}}:unbound",
                   "platforms": "linux/arm64",
                   "push": true,
                   "tags": "${{ steps.login-ecr.outputs.registry }}/unbound:${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/unbound:latest"
@@ -42,11 +42,11 @@
    "on": {
       "push": {
          "branches": [
-            "master",
+            "main",
             "test"
          ],
          "paths": [
-            "docker/unbound/**",
+            "unbound/**",
             ".github/workflows/docker-unbound.yml"
          ]
       }

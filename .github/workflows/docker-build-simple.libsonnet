@@ -1,15 +1,15 @@
 // Convention:
 //   Workflow definition: .github/workflow/docker-#{name}.yml
-//   Docker manifest docker/#{name}/Dockerfile
+//   Docker manifest #{name}/Dockerfile
 //   ECR repository: #{name}
 
 function(name) {
   name: std.format('docker-%s', name),
   on: {
     push: {
-      branches: ['master', 'test'],
+      branches: ['main', 'test'],
       paths: [
-        std.format('docker/%s/**', name),
+        std.format('%s/**', name),
         std.format('.github/workflows/docker-%s.yml', name),
       ],
     },
@@ -37,7 +37,7 @@ function(name) {
         {
           uses: 'docker/build-push-action@v3',
           with: {
-            context: std.format('{{defaultContext}}:docker/%s', name),
+            context: std.format('{{defaultContext}}:%s', name),
             platforms: std.join(',', ['linux/arm64']),
             tags: std.join(',', [
               std.format('${{ steps.login-ecr.outputs.registry }}/%s:${{ github.sha }}', name),

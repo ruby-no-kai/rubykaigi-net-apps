@@ -4,12 +4,14 @@ require 'json'
 
 Dir.chdir(__dir__)
 
+jsonnet = system('jrsonnet', '--help', out: File::NULL, err: [:child, :out]) ? 'jrsonnet' : 'jsonnet'
+
 Dir["./.github/workflows/*.jsonnet"].each do |src|
   dst = src.sub(/\.jsonnet$/, '.yml')
   p [src => dst]
   FileUtils.mkdir_p File.dirname(dst)
 
   File.open(dst, 'w') do |io|
-    system('jsonnet', src, out: io, exception: true)
+    system(jsonnet, src, out: io, exception: true)
   end
 end

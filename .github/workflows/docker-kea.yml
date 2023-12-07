@@ -29,7 +29,7 @@
             {
                "uses": "docker/build-push-action@v3",
                "with": {
-                  "context": "{{defaultContext}}:docker/kea",
+                  "context": "{{defaultContext}}:kea",
                   "platforms": "linux/arm64",
                   "push": true,
                   "tags": "${{ steps.login-ecr.outputs.registry }}/kea:${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/kea:latest"
@@ -42,11 +42,11 @@
    "on": {
       "push": {
          "branches": [
-            "master",
+            "main",
             "test"
          ],
          "paths": [
-            "docker/kea/**",
+            "kea/**",
             ".github/workflows/docker-kea.yml"
          ]
       }

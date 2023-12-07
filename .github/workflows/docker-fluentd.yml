@@ -29,7 +29,7 @@
             {
                "uses": "docker/build-push-action@v3",
                "with": {
-                  "context": "{{defaultContext}}:docker/fluentd",
+                  "context": "{{defaultContext}}:fluentd",
                   "platforms": "linux/arm64",
                   "push": true,
                   "tags": "${{ steps.login-ecr.outputs.registry }}/fluentd:${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/fluentd:latest"
@@ -42,11 +42,11 @@
    "on": {
       "push": {
          "branches": [
-            "master",
+            "main",
             "test"
          ],
          "paths": [
-            "docker/fluentd/**",
+            "fluentd/**",
             ".github/workflows/docker-fluentd.yml"
          ]
       }
