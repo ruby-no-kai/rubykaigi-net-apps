@@ -3,7 +3,7 @@
 //   Docker manifest #{name}/Dockerfile
 //   ECR repository: #{name}
 
-function(name) {
+function(name, region='ap-northeast-1') {
   name: std.format('docker-%s', name),
   on: {
     push: {
@@ -25,7 +25,7 @@ function(name) {
         {
           uses: 'aws-actions/configure-aws-credentials@v1',
           with: {
-            'aws-region': 'ap-northeast-1',
+            'aws-region': region,
             'role-to-assume': 'arn:aws:iam::005216166247:role/GhaDockerPush',
             'role-skip-session-tagging': true,
           },
