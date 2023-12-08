@@ -3,7 +3,7 @@
 //   Docker manifest #{name}/Dockerfile
 //   ECR repository: #{name}
 
-function(name, region='ap-northeast-1') {
+function(name, region='ap-northeast-1', platforms=['linux/arm64']) {
   name: std.format('docker-%s', name),
   on: {
     push: {
@@ -19,8 +19,8 @@ function(name, region='ap-northeast-1') {
       name: 'build',
       'runs-on': 'ubuntu-latest',
       permissions: { 'id-token': 'write', contents: 'read' },
-      steps: [
-        { uses: 'docker/setup-qemu-action@v2' },
+      steps: [] +
+             (if std.member(platforms, 'linux/arm64') then [{ uses: 'docker/setup-qemu-action@v2' }] else []) + [
         { uses: 'docker/setup-buildx-action@v2' },
         {
           uses: 'aws-actions/configure-aws-credentials@v1',
@@ -38,7 +38,7 @@ function(name, region='ap-northeast-1') {
           uses: 'docker/build-push-action@v3',
           with: {
             context: std.format('{{defaultContext}}:%s', name),
-            platforms: std.join(',', ['linux/arm64']),
+            platforms: std.join(',', platforms),
             tags: std.join(',', [
               std.format('${{ steps.login-ecr.outputs.registry }}/%s:${{ github.sha }}', name),
               std.format('${{ steps.login-ecr.outputs.registry }}/%s:latest', name),

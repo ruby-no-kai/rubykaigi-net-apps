@@ -9,9 +9,6 @@
          "runs-on": "ubuntu-latest",
          "steps": [
             {
-               "uses": "docker/setup-qemu-action@v2"
-            },
-            {
                "uses": "docker/setup-buildx-action@v2"
             },
             {
@@ -30,7 +27,7 @@
                "uses": "docker/build-push-action@v3",
                "with": {
                   "context": "{{defaultContext}}:slack-thread-expander",
-                  "platforms": "linux/arm64",
+                  "platforms": "linux/amd64",
                   "push": true,
                   "tags": "${{ steps.login-ecr.outputs.registry }}/slack-thread-expander:${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/slack-thread-expander:latest"
                }
