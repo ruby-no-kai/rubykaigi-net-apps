@@ -8,12 +8,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends --no-install-su
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN rm /etc/freeradius/3.0/sites-enabled/*
-COPY raddb/ /etc/freeradius/3.0/
+COPY --chown=freerad:freerad raddb/ /etc/freeradius/3.0/
+COPY --chown=freerad:freerad dummycert /secrets/tls-cert
 COPY run.sh /run.sh
 
-RUN ls -la /etc/freeradius/3.0/sites-* /etc/freeradius/3.0/mods-*
+RUN find /etc/freeradius/3.0 /secrets/tls-cert \( -type f -exec chmod 0640 {} + \) -o \( -type d -exec chmod 0750 {} + \)
 
-COPY --chown=freerad:freerad dummycert /secrets/tls-cert
+RUN ls -Rla /etc/freeradius/3.0
 RUN ls -la /secrets/tls-cert
 
 USER freerad
