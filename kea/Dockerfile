@@ -63,6 +63,7 @@ RUN apt-get update \
       ruby \
       iproute2 \
       kea \
+      mysql-client \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build-healthz /app/bin/healthz /app/healthzd
