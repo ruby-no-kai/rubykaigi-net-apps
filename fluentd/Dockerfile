@@ -1,5 +1,5 @@
 # buildtrigger: 1
-FROM fluent/fluentd:v1.16-debian-1
+FROM fluent/fluentd:v1.16.5-debian-1.0
 
 USER root
 RUN fluent-gem install fluent-plugin-prometheus -v 2.0.3 && \
