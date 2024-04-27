@@ -1,10 +1,10 @@
-FROM public.ecr.aws/docker/library/golang:1.20-bullseye as build-exporter
+FROM public.ecr.aws/docker/library/golang:1.22-bookworm as build-exporter
 
-RUN go install github.com/hanazuki/unbound_exporter@679dfa54debd24456ed458a7e72590101b560e2b
+RUN go install github.com/hanazuki/unbound_exporter@8ff4abc0f6e4b05e3bb4073dda1227cdaffdefcc
 
 ###
 
-FROM public.ecr.aws/docker/library/debian:bookworm
+FROM public.ecr.aws/ubuntu/ubuntu:24.04
 
 RUN apt-get update -qq && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends unbound dns-root-data dumb-init && \

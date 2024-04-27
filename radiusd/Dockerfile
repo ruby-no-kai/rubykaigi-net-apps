@@ -1,6 +1,6 @@
-FROM public.ecr.aws/ubuntu/ubuntu:22.04
+FROM public.ecr.aws/ubuntu/ubuntu:24.04
 
-ARG FR_VERSION=3.0.26~dfsg~git20220223.1.00ed0241fa-0ubuntu3.2
+ARG FR_VERSION=3.2.3+dfsg-2build7
 
 RUN mkdir -p /etc/freeradius/3.0/certs && touch /etc/freeradius/3.0/certs/dh
 RUN apt-get update && apt-get install -y --no-install-recommends --no-install-suggests \
