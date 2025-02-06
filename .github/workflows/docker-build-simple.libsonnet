@@ -3,28 +3,30 @@
 //   Docker manifest #{name}/Dockerfile
 //   ECR repository: #{name}
 
-local runnersMap = {
-  'linux/amd64': 'ubuntu-24.04',
-  'linux/arm64': 'ubuntu-24.04-arm',
-};
+function(name, region='ap-northeast-1', platforms=['linux/arm64']) {
+  common:: {
+    setupSteps: [
+      { uses: 'docker/setup-buildx-action@v3' },
+      {
+        uses: 'aws-actions/configure-aws-credentials@v4',
+        with: {
+          'aws-region': region,
+          'role-to-assume': 'arn:aws:iam::005216166247:role/GhaDockerPush',
+          'role-skip-session-tagging': true,
+        },
+      },
+      {
+        uses: 'aws-actions/amazon-ecr-login@v2',
+        id: 'login-ecr',
+      },
+    ],
 
-local setupSteps = function(region) [
-  { uses: 'docker/setup-buildx-action@v3' },
-  {
-    uses: 'aws-actions/configure-aws-credentials@v4',
-    with: {
-      'aws-region': region,
-      'role-to-assume': 'arn:aws:iam::005216166247:role/GhaDockerPush',
-      'role-skip-session-tagging': true,
+    runnersMap: {
+      'linux/amd64': 'ubuntu-24.04',
+      'linux/arm64': 'ubuntu-24.04-arm',
     },
   },
-  {
-    uses: 'aws-actions/amazon-ecr-login@v2',
-    id: 'login-ecr',
-  },
-];
 
-function(name, region='ap-northeast-1', platforms=['linux/arm64']) {
   name: std.format('docker-%s', name),
   on: {
     push: {
@@ -42,14 +44,14 @@ function(name, region='ap-northeast-1', platforms=['linux/arm64']) {
           include: std.map(function(platform) {
             key: std.strReplace(platform, '/', '-'),  // for artifact name
             platform: platform,
-            runner: runnersMap[platform],
+            runner: $.common.runnersMap[platform],
           }, platforms),
         },
       },
       name: 'build (${{ matrix.platform }})',
       'runs-on': '${{ matrix.runner }}',
       permissions: { 'id-token': 'write', contents: 'read' },
-      steps: setupSteps(region) + [
+      steps: $.common.setupSteps + [
         {
           uses: 'docker/build-push-action@v6',
           id: 'build-push',
@@ -87,7 +89,7 @@ function(name, region='ap-northeast-1', platforms=['linux/arm64']) {
       'runs-on': 'ubuntu-latest',
       needs: ['build'],
       permissions: { 'id-token': 'write' },
-      steps: setupSteps(region) + [
+      steps: $.common.setupSteps + [
         {
           name: 'Download digests',
           uses: 'actions/download-artifact@v4',
