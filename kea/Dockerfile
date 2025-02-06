@@ -4,19 +4,14 @@ ARG BASE=public.ecr.aws/ubuntu/ubuntu:24.04
 
 ###
 
-FROM --platform=$BUILDPLATFORM public.ecr.aws/docker/library/rust:1.77-slim-bullseye as build-healthz
-RUN rustup target add aarch64-unknown-linux-gnu
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-      gcc-aarch64-linux-gnu
+FROM public.ecr.aws/docker/library/rust:1.77-slim-bullseye as build-healthz
 
 WORKDIR /build/healthz
 COPY healthz/ ./
 
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/build/healthz/target \
-    CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc \
-    cargo install --path . --root /app --locked --target=aarch64-unknown-linux-gnu
+    cargo install --path . --root /app --locked
 
 ###
 
