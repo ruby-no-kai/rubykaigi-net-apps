@@ -105,6 +105,14 @@
                },
                "name": "Push manifest",
                "run": "cat \"${RUNNER_TEMP}\"/digests/* | xargs -I{} printf \"%s@%s\" \"${REPO}\" {} | docker buildx imagetools create -f /dev/stdin -t \"${REPO}:latest\" -t \"${REPO}:${SHA}\"\ndocker buildx imagetools inspect \"${REPO}:${SHA}\"\n"
+            },
+            {
+               "env": {
+                  "REPO": "${{ steps.login-ecr.outputs.registry }}/attendee-gate",
+                  "SHA": "${{ github.sha }}"
+               },
+               "name": "Push arm64 tag for Lambda",
+               "run": "dgst=\"$(docker buildx imagetools inspect --raw -t \"${REPO}:${SHA}\" | jq -r '.manifests[] | select(.platform.architecture == \"arm64\" and .platform.os == \"linux\") | .digest')\"\ndocker tag  \"${REPO}@${dgst}\" \"${REPO}:${SHA}-arm64\"\ndocker push \"${REPO}:${SHA}-arm64\"\n"
             }
          ]
       }
