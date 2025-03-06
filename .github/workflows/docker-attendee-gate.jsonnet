@@ -6,8 +6,7 @@
           name: 'Push arm64 tag for Lambda',  // doesnt support manifest
           run: |||
             dgst="$(docker buildx imagetools inspect --raw "${REPO}:${SHA}" | jq -r '.manifests[] | select(.platform.architecture == "arm64" and .platform.os == "linux") | .digest')"
-            docker tag  "${REPO}@${dgst}" "${REPO}:${SHA}-arm64"
-            docker push "${REPO}:${SHA}-arm64"
+            docker  imagetools create --tag  "${REPO}:${SHA}-arm64" "${REPO}@${dgst}" 
           |||,
           env: {
             REPO: std.format('${{ steps.login-ecr.outputs.registry }}/%s', 'attendee-gate'),
