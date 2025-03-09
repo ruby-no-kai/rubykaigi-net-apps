@@ -4,7 +4,7 @@ ARG BASE=public.ecr.aws/ubuntu/ubuntu:24.04
 
 ###
 
-FROM public.ecr.aws/docker/library/rust:1.77-slim-bullseye as build-healthz
+FROM public.ecr.aws/docker/library/rust:1.85-slim-bookworm as build-healthz
 
 WORKDIR /build/healthz
 COPY healthz/ ./
@@ -21,7 +21,7 @@ RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git rake build-essential wget unzip python3
 
 WORKDIR /build
-RUN git clone --depth=1 https://gitlab.isc.org/isc-projects/stork -b v1.15.0
+RUN git clone --depth=1 https://gitlab.isc.org/isc-projects/stork -b v2.1.1
 
 WORKDIR /build/stork/backend
 ENV GOPATH=/build/go
