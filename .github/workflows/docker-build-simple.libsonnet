@@ -59,6 +59,8 @@ function(name, region='ap-northeast-1', platforms=['linux/arm64']) {
             context: std.format('{{defaultContext}}:%s', name),
             platforms: '${{ matrix.platform }}',
             outputs: std.format('type=image,"name=${{ steps.login-ecr.outputs.registry }}/%s",push-by-digest=true,name-canonical=true,push=true', name),
+            'cache-from': 'type=gha',
+            'cache-to': 'type=gha,mode=max',
           },
         },
         {
