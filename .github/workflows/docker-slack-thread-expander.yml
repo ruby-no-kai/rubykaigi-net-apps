@@ -27,6 +27,8 @@
                "id": "build-push",
                "uses": "docker/build-push-action@v6",
                "with": {
+                  "cache-from": "type=gha",
+                  "cache-to": "type=gha,mode=max",
                   "context": "{{defaultContext}}:slack-thread-expander",
                   "outputs": "type=image,\"name=${{ steps.login-ecr.outputs.registry }}/slack-thread-expander\",push-by-digest=true,name-canonical=true,push=true",
                   "platforms": "${{ matrix.platform }}"

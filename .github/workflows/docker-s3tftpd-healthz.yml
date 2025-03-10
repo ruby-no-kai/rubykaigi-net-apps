@@ -27,6 +27,8 @@
                "id": "build-push",
                "uses": "docker/build-push-action@v6",
                "with": {
+                  "cache-from": "type=gha",
+                  "cache-to": "type=gha,mode=max",
                   "context": "{{defaultContext}}:s3tftpd-healthz",
                   "outputs": "type=image,\"name=${{ steps.login-ecr.outputs.registry }}/s3tftpd-healthz\",push-by-digest=true,name-canonical=true,push=true",
                   "platforms": "${{ matrix.platform }}"
