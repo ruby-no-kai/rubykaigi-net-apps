@@ -44,18 +44,28 @@ RUN jsonnet /tmp/kea-ctrl-agent.jsonnet > /app/kea-ctrl-agent.json
 
 FROM $BASE
 
-RUN mkdir -p /run/kea /app
+RUN mkdir -p /run/kea /app /etc/apt/keyrings
+RUN rm -fv /etc/apt/apt.conf.d/docker-clean
 VOLUME /run/kea
 
-RUN apt-get update \
+RUN  --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt/lists apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
       ca-certificates \
       dumb-init \
       ruby \
       iproute2 \
-      kea \
-      mysql-client \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+      mysql-client
+
+ARG kea_version 2.7.6-isc20250128083638
+COPY kea-dev.asc /etc/apt/keyrings/kea-dev.asc
+RUN echo "deb [signed-by=/etc/apt/keyrings/kea-dev.asc] https://dl.cloudsmith.io/public/isc/kea-dev/deb/ubuntu noble main" > /etc/apt/sources.list.d/kea.list
+RUN echo "Package: src:isc-kea\nPin: version ${kea_version}\nPin-Priority: 999" > /etc/apt/preferences.d/pin-kea
+RUN  --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt/lists apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      isc-kea-dhcp4-server \
+      isc-kea-mysql \
+      isc-kea-ctrl-agent \
+      isc-kea-admin
 
 COPY --from=build-healthz /app/bin/healthz /app/healthzd
 COPY --from=build-stork /build/go/bin/stork-agent /app/stork-agent
