@@ -16,12 +16,14 @@ GEM
       aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.2.0)
     jmespath (1.6.2)
+    rexml (3.4.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   aws-sdk-rds
+  rexml
 
 BUNDLED WITH
    2.6.3
