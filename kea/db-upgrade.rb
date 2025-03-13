@@ -9,7 +9,7 @@ File.write '/app/rds-ca-bundle.pem', URI.open("https://truststore.pki.rds.amazon
 
 def run(host:, name:)
   user_name =ENV.fetch('KEA_ADMIN_DB_USER')
-  token = auth.generate_auth_token(region: REGION, endpoint: "#{host}:3306", expires_in: 900, user_name: user_name)
+  token = @auth.generate_auth_token(region: REGION, endpoint: "#{host}:3306", expires_in: 900, user_name: user_name)
   ENV['KEA_ADMIN_DB_PASSWORD'] = token
   puts ">>>> kea-admin db-upgrade -n #{name} -h #{host}"
   system(
@@ -17,7 +17,7 @@ def run(host:, name:)
     '-h', host,
     '-u', user_name,
     '-n', name,
-    '-z', "--enable-cleartext-plugin --ssl-ca /app/rds-ca-bundle.pem",
+    '-x', "--enable-cleartext-plugin --ssl-ca /app/rds-ca-bundle.pem",
     exception: true
   )
 end
