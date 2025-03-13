@@ -34,6 +34,21 @@ RUN --mount=type=cache,dst=/build/stork/tools \
 
 ###
 
+FROM $BASE as bundler
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      ruby \
+      ruby-bundler
+COPY Gemfile* /app/
+ENV BUNDLE_GEMFILE /app/Gemfile
+ENV BUNDLE_PATH /app/vendor/bundle
+ENV BUNDLE_DEPLOYMENT 1
+ENV BUNDLE_JOBS 16
+ENV BUNDLE_WITHOUT development:test
+RUN bundle install
+
+###
+
 FROM --platform=$BUILDPLATFORM $BASE as config
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y jsonnet
 WORKDIR /app
@@ -50,9 +65,10 @@ VOLUME /run/kea
 
 RUN  --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt/lists apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      curl \
       ca-certificates \
       dumb-init \
-      ruby \
+      ruby ruby-bundler \
       iproute2 \
       mysql-client
 
@@ -70,8 +86,19 @@ RUN  --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib
 
 COPY --from=build-healthz /app/bin/healthz /app/healthzd
 COPY --from=build-stork /build/go/bin/stork-agent /app/stork-agent
+
+COPY Gemfile* /app/
+COPY --from=bundler /app/vendor/bundle /app/vendor/bundle
+ENV BUNDLE_GEMFILE /app/Gemfile
+ENV BUNDLE_PATH /app/vendor/bundle
+ENV BUNDLE_DEPLOYMENT 1
+ENV BUNDLE_JOBS 16
+ENV BUNDLE_WITHOUT development:test
+
 RUN ln -s /usr/lib/$(uname -m)-linux-gnu/kea/hooks /app/kea-hooks
+
 COPY run.sh /app/run.sh
+COPY db-upgrade.rb /app/db-upgrade.rb
 COPY choose_dhcp_server_id.rb /app/choose_dhcp_server_id.rb
 COPY --from=config /app/kea-ctrl-agent.json /app/kea-ctrl-agent.json
 
