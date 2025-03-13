@@ -65,7 +65,8 @@ RUN  --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib
       isc-kea-dhcp4-server \
       isc-kea-mysql \
       isc-kea-ctrl-agent \
-      isc-kea-admin
+      isc-kea-admin \
+      isc-kea-hooks
 
 COPY --from=build-healthz /app/bin/healthz /app/healthzd
 COPY --from=build-stork /build/go/bin/stork-agent /app/stork-agent
