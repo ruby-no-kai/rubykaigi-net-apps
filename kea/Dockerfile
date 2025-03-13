@@ -65,10 +65,12 @@ RUN  --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib
       isc-kea-dhcp4-server \
       isc-kea-mysql \
       isc-kea-ctrl-agent \
-      isc-kea-admin
+      isc-kea-admin \
+      isc-kea-hooks
 
 COPY --from=build-healthz /app/bin/healthz /app/healthzd
 COPY --from=build-stork /build/go/bin/stork-agent /app/stork-agent
+RUN ln -s /usr/lib/$(uname -m)-linux-gnu/kea/hooks /app/kea-hooks
 COPY run.sh /app/run.sh
 COPY choose_dhcp_server_id.rb /app/choose_dhcp_server_id.rb
 COPY --from=config /app/kea-ctrl-agent.json /app/kea-ctrl-agent.json
