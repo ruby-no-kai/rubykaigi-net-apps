@@ -1,13 +1,13 @@
-FROM --platform=$BUILDPLATFORM public.ecr.aws/docker/library/golang:1.20-bullseye as builder
+FROM public.ecr.aws/docker/library/rust:1.85-slim-bookworm as build
 
-ENV GOOS=linux
-ENV GOARCH=arm64
-ENV CGO_ENABLED=0
-COPY . /work/s3tftpd-healthz
-WORKDIR /work/s3tftpd-healthz
-RUN go build -o /healthz .
+COPY . /build/s3tftpd-healthz
+WORKDIR /build/s3tftpd-healthz
 
-FROM gcr.io/distroless/base-debian11
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/build/s3tftpd-healthz/target \
+    cargo install --path . --root /app --locked
 
-COPY --from=builder /healthz /usr/local/bin/
-CMD /usr/local/bin/healthz
+FROM public.ecr.aws/docker/library/debian:bookworm-slim
+
+COPY --from=build /app /app
+CMD ["/app/bin/s3tftpd-healthz"]
