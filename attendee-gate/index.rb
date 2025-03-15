@@ -15,6 +15,11 @@ module AttendeeGate
       Generator.handle(event:, context:, environ:)
     end
 
+    def self.generate_metrics(event:, context:)
+      require_relative './metrics'
+      Metrics.handle(event:, context:, environ:)
+    end
+
     def self.http(event:, context:)
       @app ||= begin
         require_relative './app'
