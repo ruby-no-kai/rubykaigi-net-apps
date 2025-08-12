@@ -36,7 +36,7 @@ RUN echo "${QUICHE_SHA256SUM}  quiche.tar.gz" | sha256sum -c
 
 ###
 
-FROM public.ecr.aws/docker/library/rust:1.85.0-bookworm AS build-quiche
+FROM public.ecr.aws/docker/library/rust:1.85.0-trixie AS build-quiche
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       cmake clang

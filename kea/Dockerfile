@@ -4,7 +4,7 @@ ARG BASE=public.ecr.aws/ubuntu/ubuntu:24.04
 
 ###
 
-FROM public.ecr.aws/docker/library/rust:1.85-slim-bookworm as build-healthz
+FROM public.ecr.aws/docker/library/rust:1.85-slim-trixie as build-healthz
 
 WORKDIR /build/healthz
 COPY healthz/ ./
