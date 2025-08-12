@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/rust:1.85-slim-trixie as build
+FROM public.ecr.aws/docker/library/rust:1.89-slim-trixie as build
 
 COPY . /build/s3tftpd-healthz
 WORKDIR /build/s3tftpd-healthz

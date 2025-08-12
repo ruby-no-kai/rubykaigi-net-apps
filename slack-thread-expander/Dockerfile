@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/rust:1.85-trixie as builder
+FROM public.ecr.aws/docker/library/rust:1.89-trixie as builder
 RUN cargo install --git https://github.com/eagletmt/slack-thread-expander --rev cd091d547ac6e6cc478855af887575355018f241
 
 FROM public.ecr.aws/docker/library/debian:trixie-slim
