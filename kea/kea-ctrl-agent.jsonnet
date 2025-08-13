@@ -6,7 +6,7 @@
       dhcp4: {
         comment: 'main server',
         'socket-type': 'unix',
-        'socket-name': '/run/kea/dhcp4.sock',
+        'socket-name': '/var/run/kea/dhcp4.sock',  // /run/kea/dhcp4.sock via symlink on /var/run; https://gitlab.isc.org/isc-projects/kea/-/issues/3831
       },
       // dhcp6: {
       //   'socket-type': 'unix',
