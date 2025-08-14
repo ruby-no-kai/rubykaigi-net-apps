@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/golang:1.22-bookworm AS build
+FROM public.ecr.aws/docker/library/golang:1.25-trixie AS build
 
 RUN go install github.com/dmachard/go-dnscollector@25b9b58c2f508719d6b9f7d5f58f753028fcc1f2
 
