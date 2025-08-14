@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/golang:1.24-trixie as build-exporter
+FROM public.ecr.aws/docker/library/golang:1.25-trixie as build-exporter
 
 RUN go install github.com/hanazuki/unbound_exporter@8ff4abc0f6e4b05e3bb4073dda1227cdaffdefcc
 
