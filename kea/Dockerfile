@@ -21,7 +21,7 @@ RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git rake build-essential wget unzip python3
 
 WORKDIR /build
-RUN git clone --depth=1 https://gitlab.isc.org/isc-projects/stork -b v2.1.1
+RUN git clone --depth=1 https://gitlab.isc.org/isc-projects/stork -b v2.3.0
 
 WORKDIR /build/stork/backend
 ENV GOPATH=/build/go
@@ -72,7 +72,7 @@ RUN  --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib
       iproute2 \
       mysql-client
 
-ARG kea_version 2.7.6-isc20250128083638
+ARG kea_version 3.1.1-isc20250825122912
 COPY kea-dev.asc /etc/apt/keyrings/kea-dev.asc
 RUN echo "deb [signed-by=/etc/apt/keyrings/kea-dev.asc] https://dl.cloudsmith.io/public/isc/kea-dev/deb/ubuntu noble main" > /etc/apt/sources.list.d/kea.list
 RUN echo "Package: src:isc-kea\nPin: version ${kea_version}\nPin-Priority: 999" > /etc/apt/preferences.d/pin-kea
@@ -96,6 +96,7 @@ ENV BUNDLE_JOBS 16
 ENV BUNDLE_WITHOUT development:test
 
 RUN ln -s /usr/lib/$(uname -m)-linux-gnu/kea/hooks /app/kea-hooks
+ENV KEA_HOOKS_PATH /app/kea-hooks
 
 COPY run.sh /app/run.sh
 COPY db-upgrade.rb /app/db-upgrade.rb
