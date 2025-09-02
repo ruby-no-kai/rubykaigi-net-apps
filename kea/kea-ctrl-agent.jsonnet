@@ -1,3 +1,5 @@
+// this file has no longer referenced. it is kept for reference from stork-agent.
+// Actual http api is now integrated into kea-dhcp4/6 server directly.
 {
   'Control-agent': {
     'http-host': '127.0.0.1',
