@@ -29,4 +29,6 @@ echo "SERVER_ID=${SERVER_ID}"
 /app/stork-agent &
 /app/healthzd &
 
-kea-dhcp4 -c /work/kea-dhcp4.json
+# -X disables security policy checking. https://kea.readthedocs.io/en/latest/arm/security.html#sec-kea-runtime-security-policy-checking
+# this is required to intentionally disable authentication on control channels.
+kea-dhcp4 -X -c /work/kea-dhcp4.json
