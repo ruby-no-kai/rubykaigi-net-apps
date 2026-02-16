@@ -1,0 +1,10 @@
+source 'https://rubygems.org'
+
+gem 'apigatewayv2_rack'
+gem 'sinatra'
+gem 'rack'
+
+gem 'httpx'
+
+gem 'sentry-ruby'
+gem 'semantic_logger'
