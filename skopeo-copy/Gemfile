@@ -1,0 +1,6 @@
+source 'https://rubygems.org'
+
+gem 'aws_lambda_ric'
+gem 'aws-sdk-ecr'
+gem 'aws-sdk-ecrpublic'
+gem 'openssl'
