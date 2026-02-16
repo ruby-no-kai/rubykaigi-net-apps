@@ -81,7 +81,8 @@ module SkopeoCopy
     arch = params['arch']
     skopeo_copy(src:, dst:, arch:)
 
-    {status: 'ok', src:, dst:}
+    image_url = dst.sub(%r{\A[a-z0-9+-]+://}, '')
+    {status: 'ok', src:, dst:, image_url:}
   end
 end
 
