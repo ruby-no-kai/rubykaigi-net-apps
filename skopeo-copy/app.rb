@@ -47,9 +47,12 @@ module SkopeoCopy
     raise "skopeo login #{registry} failed (status=#{status.exitstatus}): #{out}" unless status.success?
   end
 
-  def self.skopeo_copy(src:, dst:)
+  def self.skopeo_copy(src:, dst:, arch: nil)
+    cmd = ['skopeo', 'copy', '--authfile', AUTHFILE]
+    cmd.push('--override-arch', arch) if arch
+    cmd.push(src, dst)
     logger.info("skopeo copy #{src} #{dst}")
-    out, status = Open3.capture2e('skopeo', 'copy', '--authfile', AUTHFILE, src, dst)
+    out, status = Open3.capture2e(*cmd)
     logger.info("skopeo copy: #{out}")
     raise "skopeo copy failed (status=#{status.exitstatus}): #{out}" unless status.success?
   end
@@ -75,9 +78,11 @@ module SkopeoCopy
       end
     end
 
-    skopeo_copy(src:, dst:)
+    arch = params['arch']
+    skopeo_copy(src:, dst:, arch:)
 
-    {status: 'ok', src:, dst:}
+    image_url = dst.sub(%r{\A[a-z0-9+-]+://}, '')
+    {status: 'ok', src:, dst:, image_url:}
   end
 end
 
