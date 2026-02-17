@@ -100,7 +100,7 @@ ENV BUNDLE_WITHOUT=development:test
 RUN ln -s /usr/lib/$(uname -m)-linux-gnu/kea/hooks /app/kea-hooks
 ENV KEA_HOOKS_PATH=/app/kea-hooks
 
-COPY run.sh /app/run.sh
+COPY --chmod=0755 run.sh /app/run.sh
 COPY db-upgrade.rb /app/db-upgrade.rb
 COPY choose_dhcp_server_id.rb /app/choose_dhcp_server_id.rb
 COPY --from=config /app/kea-ctrl-agent.json /app/kea-ctrl-agent.json
