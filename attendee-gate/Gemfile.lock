@@ -38,7 +38,6 @@ GEM
     mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
     nio4r (2.7.5)
-    openssl (4.0.1)
     puma (7.2.0)
       nio4r (~> 2.0)
     rack (3.2.5)
@@ -72,7 +71,6 @@ DEPENDENCIES
   aws-sdk-ssm
   base64
   httpx
-  openssl
   puma
   rexml
   sinatra
