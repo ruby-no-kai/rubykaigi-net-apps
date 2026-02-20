@@ -8,6 +8,7 @@ gem 'apigatewayv2_rack', '>= 0.2.2'
 gem 'httpx'
 gem 'rexml'
 gem 'base64'
+gem 'openssl'
 
 group :development do
   gem 'puma'

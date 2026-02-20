@@ -145,7 +145,7 @@ if $0 == __FILE__
   AttendeeGate::Metrics.new(
     bucket: ENV.fetch('S3_BUCKET','rk-attendee-gate'),
     key: ENV.fetch('S3_KEY','dev/prometheus/2024'),
-    event_slug: ENV.fetch('TITO_EVENT_SLUG', 'rubykaigi/2024'),
+    event_slug: ENV.fetch('TITO_EVENT_SLUG', 'rubykaigi/2026'),
     environ: AttendeeGate::Handlers.environ,
   ).perform
 end

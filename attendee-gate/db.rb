@@ -4,15 +4,16 @@ require 'openssl'
 
 module AttendeeGate
   class DB
-    EPOCH = 1
+    EPOCH = 2
     HASH_ALG = 'sha384'
 
-    Attendee = Data.define(:code, :email_hashed, :state) do
-      def self.make(code:, email:, state:, hash_key:)
+    Attendee = Data.define(:code, :email_hashed, :state, :release) do
+      def self.make(code:, email:, state:, release:, hash_key:)
         new(
-          code: code,
+          code:,
           email_hashed: DB.hash(hash_key, email),
-          state: state,
+          state:,
+          release:,
         )
       end
 
@@ -21,6 +22,7 @@ module AttendeeGate
           code: row.fetch('code'),
           email_hashed: row.fetch('email_hashed').to_s,
           state: row.fetch('state'),
+          release: row.fetch('release'),
         )
       end
     end
@@ -85,6 +87,7 @@ module AttendeeGate
         create table "attendees" (
           code text not null unique,
           email_hashed blob not null default '',
+          release text not null,
           state text not null
         ) strict;
       SQL
@@ -100,10 +103,10 @@ module AttendeeGate
       @db.execute(%{insert into "attendeegate_epoch" ("epoch", "finger", "created_at") values (?,?,?)}, [EPOCH, SecureRandom.urlsafe_base64(12),Time.now.to_i])
     end
 
-    def insert_attendee(code:, email:, state:)
-      attendee = Attendee.make(code:, email:, state:, hash_key: @hash_key)
-      @db.execute(<<~SQL, [attendee.code, attendee.email_hashed.to_blob, attendee.state])
-        insert into "attendees" ("code", "email_hashed", "state") values (?, ?, ?)
+    def insert_attendee(code:, email:, state:, release:)
+      attendee = Attendee.make(code:, email:, state:, release:, hash_key: @hash_key)
+      @db.execute(<<~SQL, [attendee.code, attendee.email_hashed.to_blob, attendee.state, attendee.release])
+        insert into "attendees" ("code", "email_hashed", "state", "release") values (?, ?, ?, ?)
       SQL
     end
 

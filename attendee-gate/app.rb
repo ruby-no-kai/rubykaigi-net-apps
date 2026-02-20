@@ -107,6 +107,9 @@ module AttendeeGate
           db: db.current.to_h,
         },
         result:,
+        ticket: result == 'ok' ? {
+          release: cand.release,
+        } : nil,
       )
     end
   end

@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/ruby:3.3 as builder
+FROM public.ecr.aws/lambda/ruby:3.4 as builder
 RUN dnf install -y gcc gcc-c++ make pkg-config git
 
 COPY Gemfile* ${LAMBDA_TASK_ROOT}/
@@ -13,7 +13,7 @@ RUN bundle install
 
 COPY . ${LAMBDA_TASK_ROOT}/app
 
-FROM public.ecr.aws/lambda/ruby:3.3
+FROM public.ecr.aws/lambda/ruby:3.4
 
 COPY --from=builder ${LAMBDA_TASK_ROOT}/vendor ${LAMBDA_TASK_ROOT}/vendor
 COPY . ${LAMBDA_TASK_ROOT}/app

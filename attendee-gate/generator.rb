@@ -35,14 +35,20 @@ module AttendeeGate
     end
 
     def perform
+      last_page = nil
       fetch_tito_tickets do |page|
         page.fetch('tickets').each do |ticket|
+          code = ticket.fetch('reference')
+          # XXX: sometime Tito API returns duplicated entry
+          next if last_page&.fetch('tickets')&.find { |t| t.fetch('reference') == code } == ticket
           @db.insert_attendee(
-            code: ticket.fetch('reference'),
+            code:,
             email: ticket.fetch('email'),
             state: ticket.fetch('state'),
+            release: tito_releases.fetch(ticket.fetch('release_id')).fetch('title'),
           )
         end
+        last_page = page
       end
 
       @tempfile.rewind
@@ -56,8 +62,36 @@ module AttendeeGate
       loop do
         p(pagenum:,total_items:)
         resp= @http.get("#{TITO_BASE_URL}/#{@event_slug}/tickets", params: { 'version' => '3.1', 'page[size]' => 100, 'page[number]' => pagenum })
+        resp.raise_for_status
         page = resp.json
         total_items += page['tickets']&.size || 0
+        yield page
+        pagenum = page.dig('meta', 'next_page')
+        break unless pagenum
+      end
+    end
+
+    private def tito_releases
+      @tito_releases ||= begin
+        releases = {}
+        fetch_tito_releases do |page|
+          page.fetch('releases').each do |release|
+            releases[release.fetch('id')] = release
+          end
+        end
+        releases
+      end
+    end
+
+    private def fetch_tito_releases
+      pagenum = nil
+      total_items = 0
+      loop do
+        p(pagenum:,total_items:)
+        resp= @http.get("#{TITO_BASE_URL}/#{@event_slug}/releases", params: { 'version' => '3.1', 'page[size]' => 100, 'page[number]' => pagenum })
+        resp.raise_for_status
+        page = resp.json
+        total_items += page['releases']&.size || 0
         yield page
         pagenum = page.dig('meta', 'next_page')
         break unless pagenum
@@ -71,7 +105,7 @@ if $0 == __FILE__
   AttendeeGate::Generator.new(
     bucket: ENV.fetch('S3_BUCKET','rk-attendee-gate'),
     key: ENV.fetch('S3_KEY','dev/dev.sqlite3'),
-    event_slug: ENV.fetch('TITO_EVENT_SLUG', 'rubykaigi/2025'),
+    event_slug: ENV.fetch('TITO_EVENT_SLUG', 'rubykaigi/2026'),
     environ: AttendeeGate::Handlers.environ,
   ).perform
 end
