@@ -93,7 +93,13 @@ module AttendeeGate
 
       cand = db.find_attendee_by_code(given_code)
       if cand
-        result = OpenSSL.fixed_length_secure_compare(cand.email_hashed, given_email_hashed) ? "ok" : "email_mismatch"
+        result = begin
+          OpenSSL.fixed_length_secure_compare(cand.email_hashed, given_email_hashed) ? "ok" : "email_mismatch"
+        rescue ArgumentError => e
+          warn e.inspect
+          warn "error during fixed_length_secure_compare, #{{email_hashed: cand.email_hashed.length, given: given_email_hashed.length, param: params[:email_hashed]&.size}.inspect}"
+          "email_mismatch/invalid_length"
+        end
       end
 
       unless result
