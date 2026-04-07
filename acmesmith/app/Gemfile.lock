@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/hanazuki/acmesmith-kubernetes
-  revision: 5e80233e1182c0e3788d1745b64bd2bc8ea2bfa0
+  revision: c310c6b652742021072a082a3e3b210d7a085f5c
   specs:
     acmesmith-kubernetes (0.1.0)
       acmesmith (~> 2.0)
