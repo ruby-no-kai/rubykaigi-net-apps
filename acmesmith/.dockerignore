@@ -1,0 +1,7 @@
+Dockerfile
+**/.gitignore
+
+**/vendor/
+**/.bundle/
+
+app/acmesmith*.yml
