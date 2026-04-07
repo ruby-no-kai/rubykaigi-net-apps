@@ -1,0 +1,5 @@
+source 'https://rubygems.org'
+
+gem 'acmesmith', git: 'https://github.com/sorah/acmesmith'
+gem 'acmesmith-kubernetes', git: 'https://github.com/hanazuki/acmesmith-kubernetes'
+gem 'acmesmith-s3', path: './acmesmith-s3'
