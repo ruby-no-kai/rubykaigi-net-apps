@@ -26,8 +26,8 @@ echo "SERVER_ID=${SERVER_ID}"
     /config/kea-dhcp4.json > /work/kea-dhcp4.json
 )
 
-kea-ctrl-agent -c /app/kea-ctrl-agent.json &
+/usr/sbin/kea-ctrl-agent -c /app/kea-ctrl-agent.json &
 /app/stork-agent &
 /app/healthzd &
 
-kea-dhcp4 -c /work/kea-dhcp4.json
+/usr/sbin/kea-dhcp4 -c /work/kea-dhcp4.json
